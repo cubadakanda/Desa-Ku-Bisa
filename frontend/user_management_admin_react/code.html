@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+
+<html class="light" lang="id"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Admin Dashboard - Desa-Ku Bisa</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-high": "#d1ecff",
+                        "surface-container": "#ddf1ff",
+                        "on-tertiary-container": "#2045a8",
+                        "inverse-on-surface": "#e3f3ff",
+                        "on-primary-fixed": "#001f28",
+                        "secondary-fixed-dim": "#79d1ff",
+                        "tertiary": "#3658ba",
+                        "tertiary-container": "#aabcff",
+                        "on-secondary-container": "#004b66",
+                        "on-primary-fixed-variant": "#004e60",
+                        "on-primary-container": "#005469",
+                        "on-tertiary-fixed": "#00164e",
+                        "surface-dim": "#b4e0fc",
+                        "primary-fixed-dim": "#4dd6ff",
+                        "primary-container": "#00cffd",
+                        "on-error-container": "#93000a",
+                        "surface-container-low": "#e9f5ff",
+                        "on-surface": "#001e2c",
+                        "outline": "#6c797f",
+                        "error-container": "#ffdad6",
+                        "surface-container-highest": "#c4e7ff",
+                        "secondary": "#006689",
+                        "on-secondary-fixed": "#001e2c",
+                        "background": "#f5faff",
+                        "error": "#ba1a1a",
+                        "primary-fixed": "#b7eaff",
+                        "on-background": "#001e2c",
+                        "surface-variant": "#c4e7ff",
+                        "surface-tint": "#00677f",
+                        "tertiary-fixed": "#dce1ff",
+                        "on-surface-variant": "#3c494e",
+                        "on-error": "#ffffff",
+                        "on-primary": "#ffffff",
+                        "inverse-primary": "#4dd6ff",
+                        "surface-bright": "#f5faff",
+                        "on-secondary-fixed-variant": "#004c68",
+                        "inverse-surface": "#00344a",
+                        "secondary-fixed": "#c3e8ff",
+                        "tertiary-fixed-dim": "#b5c4ff",
+                        "surface": "#f5faff",
+                        "secondary-container": "#1bc0fe",
+                        "on-tertiary": "#ffffff",
+                        "on-tertiary-fixed-variant": "#163ea1",
+                        "outline-variant": "#bbc9cf",
+                        "surface-container-lowest": "#ffffff",
+                        "primary": "#00677f",
+                        "on-secondary": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Public Sans"],
+                        "display": ["Public Sans"],
+                        "body": ["Public Sans"],
+                        "label": ["Public Sans"]
+                    }
+                },
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Public Sans', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen flex">
+<!-- SideNavBar Component -->
+<aside class="h-screen w-64 fixed left-0 top-0 border-r border-outline-variant bg-surface shadow-lg flex flex-col py-6 z-50">
+<div class="px-6 mb-8">
+<h1 class="text-lg font-black text-secondary">Desa-Ku Bisa</h1>
+<p class="text-xs text-outline font-medium">Sistem Informasi Desa</p>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="text-on-surface-variant mx-2 flex items-center px-4 py-3 hover:bg-surface-container-low rounded-lg transition-transform duration-200 hover:translate-x-1" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="dashboard">dashboard</span>
+<span class="font-['Public_Sans'] text-sm">Dashboard</span>
+</a>
+<a class="text-on-surface-variant mx-2 flex items-center px-4 py-3 hover:bg-surface-container-low rounded-lg transition-transform duration-200 hover:translate-x-1" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="description">description</span>
+<span class="font-['Public_Sans'] text-sm">Layanan Mandiri</span>
+</a>
+<!-- Active State: Data Warga -->
+<a class="bg-primary-container text-on-primary-container font-semibold rounded-lg mx-2 flex items-center px-4 py-3 transition-transform duration-200 hover:translate-x-1 shadow-sm" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="group" style="font-variation-settings: 'FILL' 1;">group</span>
+<span class="font-['Public_Sans'] text-sm">Data Warga</span>
+</a>
+<a class="text-on-surface-variant mx-2 flex items-center px-4 py-3 hover:bg-surface-container-low rounded-lg transition-transform duration-200 hover:translate-x-1" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="inventory_2">inventory_2</span>
+<span class="font-['Public_Sans'] text-sm">Inventaris</span>
+</a>
+<a class="text-on-surface-variant mx-2 flex items-center px-4 py-3 hover:bg-surface-container-low rounded-lg transition-transform duration-200 hover:translate-x-1" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="analytics">analytics</span>
+<span class="font-['Public_Sans'] text-sm">Laporan</span>
+</a>
+</nav>
+<div class="px-4 mt-4">
+<button class="w-full bg-secondary text-on-secondary py-2.5 rounded-xl font-bold text-sm shadow-md active:scale-95 transition-all">
+                Buat Laporan
+            </button>
+</div>
+<div class="mt-auto border-t border-outline-variant pt-4 space-y-1">
+<a class="text-on-surface-variant mx-2 flex items-center px-4 py-2 hover:bg-surface-container-low rounded-lg transition-transform duration-200 hover:translate-x-1" href="#">
+<span class="material-symbols-outlined mr-3 text-sm" data-icon="settings">settings</span>
+<span class="font-['Public_Sans'] text-sm">Pengaturan</span>
+</a>
+<a class="text-on-surface-variant mx-2 flex items-center px-4 py-2 hover:bg-surface-container-low rounded-lg transition-transform duration-200 hover:translate-x-1" href="#">
+<span class="material-symbols-outlined mr-3 text-sm" data-icon="help">help</span>
+<span class="font-['Public_Sans'] text-sm">Bantuan</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-1 ml-64 min-h-screen flex flex-col bg-surface-bright">
+<!-- Top Header Area -->
+<header class="sticky top-0 bg-surface/80 backdrop-blur-md z-40 px-8 py-6 flex justify-between items-center">
+<div>
+<h2 class="text-2xl font-bold text-on-surface">Manajemen Penduduk</h2>
+<p class="text-outline text-sm">Kelola data warga dan integrasi kependudukan</p>
+</div>
+<div class="flex items-center gap-4">
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-sm" data-icon="search">search</span>
+<input class="pl-10 pr-4 py-2 bg-surface-container-lowest border border-outline-variant rounded-xl text-sm focus:ring-2 focus:ring-primary-container focus:outline-none w-64 transition-all" placeholder="Cari NIK atau Nama..." type="text"/>
+</div>
+<button class="bg-primary text-on-primary px-5 py-2.5 rounded-xl font-semibold flex items-center gap-2 shadow-lg hover:shadow-primary-container/20 transition-all active:scale-95">
+<span class="material-symbols-outlined text-sm" data-icon="person_add">person_add</span>
+                    Tambah Warga
+                </button>
+</div>
+</header>
+<!-- Stats Bento Grid -->
+<section class="px-8 mb-8 grid grid-cols-1 md:grid-cols-4 gap-4">
+<div class="bg-surface-container-lowest p-5 rounded-xl border border-outline-variant shadow-sm flex flex-col justify-between h-32">
+<div class="flex justify-between">
+<span class="material-symbols-outlined text-primary bg-primary-container/30 p-2 rounded-lg" data-icon="groups">groups</span>
+<span class="text-on-surface-variant font-bold text-lg">+12</span>
+</div>
+<div>
+<p class="text-outline text-xs font-semibold uppercase tracking-wider">Total Penduduk</p>
+<h4 class="text-xl font-bold text-on-surface">3,248</h4>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-5 rounded-xl border border-outline-variant shadow-sm flex flex-col justify-between h-32">
+<div class="flex justify-between">
+<span class="material-symbols-outlined text-tertiary bg-tertiary-container/30 p-2 rounded-lg" data-icon="how_to_reg">how_to_reg</span>
+<span class="text-on-surface-variant font-bold text-lg">98%</span>
+</div>
+<div>
+<p class="text-outline text-xs font-semibold uppercase tracking-wider">Terverifikasi</p>
+<h4 class="text-xl font-bold text-on-surface">3,180</h4>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-5 rounded-xl border border-outline-variant shadow-sm flex flex-col justify-between h-32">
+<div class="flex justify-between">
+<span class="material-symbols-outlined text-secondary bg-secondary-container/30 p-2 rounded-lg" data-icon="male">male</span>
+</div>
+<div>
+<p class="text-outline text-xs font-semibold uppercase tracking-wider">Laki-laki</p>
+<h4 class="text-xl font-bold text-on-surface">1,594</h4>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-5 rounded-xl border border-outline-variant shadow-sm flex flex-col justify-between h-32">
+<div class="flex justify-between">
+<span class="material-symbols-outlined text-error bg-error-container/30 p-2 rounded-lg" data-icon="female">female</span>
+</div>
+<div>
+<p class="text-outline text-xs font-semibold uppercase tracking-wider">Perempuan</p>
+<h4 class="text-xl font-bold text-on-surface">1,654</h4>
+</div>
+</div>
+</section>
+<!-- Main Content Area: Data Table -->
+<section class="px-8 pb-12 flex-1">
+<div class="bg-surface-container-lowest rounded-2xl border border-outline-variant shadow-sm overflow-hidden flex flex-col h-full min-h-[600px]">
+<!-- Table Filters -->
+<div class="px-6 py-4 border-b border-outline-variant flex justify-between items-center bg-surface-container-low/30">
+<div class="flex gap-2">
+<button class="px-4 py-1.5 bg-primary-container text-on-primary-container rounded-lg text-sm font-bold shadow-sm">Semua</button>
+<button class="px-4 py-1.5 text-on-surface-variant hover:bg-surface-container rounded-lg text-sm font-medium transition-colors">Dusun I</button>
+<button class="px-4 py-1.5 text-on-surface-variant hover:bg-surface-container rounded-lg text-sm font-medium transition-colors">Dusun II</button>
+<button class="px-4 py-1.5 text-on-surface-variant hover:bg-surface-container rounded-lg text-sm font-medium transition-colors">Dusun III</button>
+</div>
+<button class="flex items-center gap-2 text-on-surface-variant text-sm font-semibold hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-base" data-icon="filter_list">filter_list</span>
+                        Filter Lanjutan
+                    </button>
+</div>
+<!-- Actual Table -->
+<div class="overflow-x-auto flex-1">
+<table class="w-full text-left border-collapse">
+<thead class="sticky top-0 bg-surface-container-low text-on-secondary-container z-10">
+<tr>
+<th class="px-6 py-4 text-xs font-bold uppercase tracking-wider border-b border-outline-variant">Nama Lengkap</th>
+<th class="px-6 py-4 text-xs font-bold uppercase tracking-wider border-b border-outline-variant">NIK</th>
+<th class="px-6 py-4 text-xs font-bold uppercase tracking-wider border-b border-outline-variant">Alamat</th>
+<th class="px-6 py-4 text-xs font-bold uppercase tracking-wider border-b border-outline-variant">Status</th>
+<th class="px-6 py-4 text-xs font-bold uppercase tracking-wider border-b border-outline-variant text-center">Aksi</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant">
+<tr class="hover:bg-surface-container-low/50 transition-colors group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-9 h-9 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center font-bold text-xs">AB</div>
+<div>
+<p class="text-sm font-bold text-on-surface">Ahmad Budianto</p>
+<p class="text-[11px] text-outline">Dusun I, RT 02/04</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 text-sm font-mono text-on-surface-variant">3275010023440001</td>
+<td class="px-6 py-4 text-sm text-on-surface-variant">Jl. Merdeka No. 45, Desa Sukamakmur</td>
+<td class="px-6 py-4">
+<span class="px-2.5 py-1 bg-green-100 text-green-700 text-[10px] font-bold rounded-full uppercase">Aktif</span>
+</td>
+<td class="px-6 py-4 text-center">
+<button class="p-2 text-outline hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-lg" data-icon="edit">edit</span>
+</button>
+<button class="p-2 text-outline hover:text-error transition-colors">
+<span class="material-symbols-outlined text-lg" data-icon="delete">delete</span>
+</button>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low/50 transition-colors">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-9 h-9 rounded-full bg-tertiary-container text-on-tertiary-container flex items-center justify-center font-bold text-xs">SW</div>
+<div>
+<p class="text-sm font-bold text-on-surface">Siti Wijaya</p>
+<p class="text-[11px] text-outline">Dusun III, RT 01/01</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 text-sm font-mono text-on-surface-variant">3275015566770002</td>
+<td class="px-6 py-4 text-sm text-on-surface-variant">Gg. Kelinci No. 12, Desa Sukamakmur</td>
+<td class="px-6 py-4">
+<span class="px-2.5 py-1 bg-green-100 text-green-700 text-[10px] font-bold rounded-full uppercase">Aktif</span>
+</td>
+<td class="px-6 py-4 text-center">
+<button class="p-2 text-outline hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-lg" data-icon="edit">edit</span>
+</button>
+<button class="p-2 text-outline hover:text-error transition-colors">
+<span class="material-symbols-outlined text-lg" data-icon="delete">delete</span>
+</button>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low/50 transition-colors">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-9 h-9 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center font-bold text-xs">DP</div>
+<div>
+<p class="text-sm font-bold text-on-surface">Dedi Prasetyo</p>
+<p class="text-[11px] text-outline">Dusun II, RT 05/02</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 text-sm font-mono text-on-surface-variant">3275010909880005</td>
+<td class="px-6 py-4 text-sm text-on-surface-variant">Jl. Mawar Merah No. 8, Desa Sukamakmur</td>
+<td class="px-6 py-4">
+<span class="px-2.5 py-1 bg-surface-container text-on-surface-variant text-[10px] font-bold rounded-full uppercase">Mutasi</span>
+</td>
+<td class="px-6 py-4 text-center">
+<button class="p-2 text-outline hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-lg" data-icon="edit">edit</span>
+</button>
+<button class="p-2 text-outline hover:text-error transition-colors">
+<span class="material-symbols-outlined text-lg" data-icon="delete">delete</span>
+</button>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low/50 transition-colors">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-9 h-9 rounded-full bg-surface-container text-on-surface-variant flex items-center justify-center font-bold text-xs">RK</div>
+<div>
+<p class="text-sm font-bold text-on-surface">Ratna Kusuma</p>
+<p class="text-[11px] text-outline">Dusun I, RT 03/04</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 text-sm font-mono text-on-surface-variant">3275014411220008</td>
+<td class="px-6 py-4 text-sm text-on-surface-variant">Jl. Melati No. 22, Desa Sukamakmur</td>
+<td class="px-6 py-4">
+<span class="px-2.5 py-1 bg-green-100 text-green-700 text-[10px] font-bold rounded-full uppercase">Aktif</span>
+</td>
+<td class="px-6 py-4 text-center">
+<button class="p-2 text-outline hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-lg" data-icon="edit">edit</span>
+</button>
+<button class="p-2 text-outline hover:text-error transition-colors">
+<span class="material-symbols-outlined text-lg" data-icon="delete">delete</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination -->
+<div class="px-6 py-4 border-t border-outline-variant flex justify-between items-center text-sm text-outline font-medium">
+<p>Menampilkan 1 - 4 dari 3,248 data</p>
+<div class="flex gap-1">
+<button class="w-8 h-8 rounded-lg flex items-center justify-center hover:bg-surface-container border border-outline-variant">
+<span class="material-symbols-outlined text-base" data-icon="chevron_left">chevron_left</span>
+</button>
+<button class="w-8 h-8 rounded-lg flex items-center justify-center bg-primary text-on-primary font-bold">1</button>
+<button class="w-8 h-8 rounded-lg flex items-center justify-center hover:bg-surface-container">2</button>
+<button class="w-8 h-8 rounded-lg flex items-center justify-center hover:bg-surface-container">3</button>
+<button class="w-8 h-8 rounded-lg flex items-center justify-center hover:bg-surface-container">...</button>
+<button class="w-8 h-8 rounded-lg flex items-center justify-center hover:bg-surface-container border border-outline-variant">
+<span class="material-symbols-outlined text-base" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Footer Component -->
+<footer class="w-full border-t mt-auto border-outline-variant bg-surface flex flex-col md:flex-row justify-between items-center px-8 py-6 max-w-[1280px] mx-auto gap-4">
+<p class="font-['Public_Sans'] text-xs text-outline">© 2024 Desa-Ku Bisa. Transformasi Digital Menuju Desa Mandiri.</p>
+<div class="flex gap-6">
+<a class="font-['Public_Sans'] text-xs text-outline hover:text-primary-container hover:underline transition-all" href="#">Kebijakan Privasi</a>
+<a class="font-['Public_Sans'] text-xs text-outline hover:text-primary-container hover:underline transition-all" href="#">Panduan Pengguna</a>
+<a class="font-['Public_Sans'] text-xs text-outline hover:text-primary-container hover:underline transition-all" href="#">Kontak Kami</a>
+</div>
+</footer>
+</main>
+<!-- Modal: Add Citizen -->
+<!-- Note: Modal is visible for design demonstration; in a real app, this would be toggled by JS -->
+<div class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-on-surface/40 backdrop-blur-sm">
+<div class="bg-surface-container-lowest w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden border border-outline-variant">
+<!-- Modal Header -->
+<div class="px-6 py-5 border-b border-outline-variant flex justify-between items-center">
+<h3 class="text-xl font-bold text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" data-icon="person_add">person_add</span>
+                    Tambah Warga Baru
+                </h3>
+<button class="text-outline hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined" data-icon="close">close</span>
+</button>
+</div>
+<!-- Modal Content -->
+<div class="p-6 space-y-5">
+<div class="space-y-2">
+<label class="block text-sm font-bold text-on-surface-variant">Nama Lengkap</label>
+<input class="w-full px-4 py-3 bg-surface border border-outline-variant rounded-xl text-sm focus:ring-2 focus:ring-primary focus:border-transparent focus:outline-none transition-all placeholder:text-outline/50" placeholder="Masukkan nama sesuai KTP" type="text"/>
+</div>
+<div class="space-y-2">
+<label class="block text-sm font-bold text-on-surface-variant">NIK (Nomor Induk Kependudukan)</label>
+<input class="w-full px-4 py-3 bg-surface border border-outline-variant rounded-xl text-sm focus:ring-2 focus:ring-primary focus:border-transparent focus:outline-none transition-all placeholder:text-outline/50" placeholder="16 digit angka" type="number"/>
+<p class="text-[10px] text-outline italic">Pastikan NIK valid dan belum terdaftar di sistem.</p>
+</div>
+<div class="space-y-2">
+<label class="block text-sm font-bold text-on-surface-variant">Alamat Lengkap</label>
+<textarea class="w-full px-4 py-3 bg-surface border border-outline-variant rounded-xl text-sm focus:ring-2 focus:ring-primary focus:border-transparent focus:outline-none transition-all placeholder:text-outline/50" placeholder="Contoh: Dusun I RT 02/03, No. 15" rows="3"></textarea>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="space-y-2">
+<label class="block text-sm font-bold text-on-surface-variant">Dusun</label>
+<select class="w-full px-4 py-3 bg-surface border border-outline-variant rounded-xl text-sm focus:ring-2 focus:ring-primary focus:outline-none appearance-none">
+<option>Pilih Dusun</option>
+<option>Dusun I</option>
+<option>Dusun II</option>
+<option>Dusun III</option>
+</select>
+</div>
+<div class="space-y-2">
+<label class="block text-sm font-bold text-on-surface-variant">RT/RW</label>
+<input class="w-full px-4 py-3 bg-surface border border-outline-variant rounded-xl text-sm focus:ring-2 focus:ring-primary focus:outline-none transition-all" placeholder="00/00" type="text"/>
+</div>
+</div>
+</div>
+<!-- Modal Footer -->
+<div class="px-6 py-5 bg-surface-container-low/30 border-t border-outline-variant flex justify-end gap-3">
+<button class="px-5 py-2.5 rounded-xl text-sm font-bold text-on-surface-variant hover:bg-surface-container transition-all">Batal</button>
+<button class="px-8 py-2.5 bg-primary text-on-primary rounded-xl text-sm font-bold shadow-lg shadow-primary/20 active:scale-95 transition-all">Simpan Data</button>
+</div>
+</div>
+</div>
+</body></html>
