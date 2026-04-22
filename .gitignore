@@ -66,3 +66,12 @@ temp/
 .cache
 .parcel-cache
 dist
+
+# Documentation files (except README)
+DEPLOYMENT_GUIDE.md
+LOCAL_TESTING_GUIDE.md
+QUICK_SETUP.md
+UTS_SUBMISSION_CHECKLIST.md
+architecture_deployment_plan_nrp_152023141.md
+setup_deployment_guide_step_1.md
+DESIGN.md
