@@ -1,17 +1,15 @@
-name: CI/CD Pipeline
+name: CI/CD Pipeline - Build & Push Docker
 
 on:
   push:
     branches:
       - main
-  pull_request:
-    branches:
-      - main
+  workflow_dispatch:
 
 env:
   REGISTRY: docker.io
-  FRONTEND_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/desa-ku-bisa-frontend
-  BACKEND_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/desa-ku-bisa-backend
+  FRONTEND_IMAGE: cubadakanda/desa-ku-bisa-frontend
+  BACKEND_IMAGE: cubadakanda/desa-ku-bisa-backend
 
 jobs:
   build-and-push:
@@ -33,7 +31,7 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build and push frontend
+      - name: Build and push frontend image
         uses: docker/build-push-action@v5
         with:
           context: ./frontend
@@ -41,8 +39,10 @@ jobs:
           tags: |
             ${{ env.FRONTEND_IMAGE }}:latest
             ${{ env.FRONTEND_IMAGE }}:${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
-      - name: Build and push backend
+      - name: Build and push backend image
         uses: docker/build-push-action@v5
         with:
           context: ./backend
@@ -50,26 +50,12 @@ jobs:
           tags: |
             ${{ env.BACKEND_IMAGE }}:latest
             ${{ env.BACKEND_IMAGE }}:${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
-  deploy:
-    needs: build-and-push
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+      - name: Image build complete
+        run: |
+          echo "✅ Frontend image: ${{ env.FRONTEND_IMAGE }}:latest"
+          echo "✅ Backend image: ${{ env.BACKEND_IMAGE }}:latest"
+          echo "Images ready to deploy!"
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Deploy to EC2
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.EC2_SSH_KEY }}
-          script: |
-            cd ~/desa-ku-bisa
-            docker pull ${{ env.FRONTEND_IMAGE }}:latest
-            docker pull ${{ env.BACKEND_IMAGE }}:latest
-            docker-compose -f docker-compose.prod.yml down || true
-            docker-compose -f docker-compose.prod.yml up -d
-            echo "✓ Deployment completed"
