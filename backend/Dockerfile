@@ -1,21 +1,21 @@
 # Multi-stage build untuk backend
-FROM node:18-alpine AS builder
+FROM node:20-alpine AS builder
 WORKDIR /app
 COPY package*.json ./
-RUN npm ci
+RUN npm install --legacy-peer-deps
 
 COPY . .
 RUN npm run build || true
 
 # Production stage
-FROM node:18-alpine
+FROM node:20-alpine
 WORKDIR /app
 
 # Install dumb-init untuk proper signal handling
 RUN apk add --no-cache dumb-init
 
 COPY package*.json ./
-RUN npm ci --only=production
+RUN npm install --legacy-peer-deps --only=production
 
 COPY --from=builder /app/src ./src
 
