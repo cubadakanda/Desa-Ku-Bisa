@@ -4,14 +4,14 @@ import fs from "fs/promises";
 import path from "path";
 import { v4 as uuidv4 } from "uuid";
 
-// Konfigurasi S3 Client dengan endpoint sesuai region
+// Konfigurasi S3 Client SESUAI REGION BUCKET
 const s3Client = new S3Client({
-  region: process.env.AWS_REGION || "ap-southeast-1",
+  region: process.env.AWS_REGION || "us-east-1", // HARUS us-east-1 sesuai bucket Anda
   credentials: {
     accessKeyId: process.env.AWS_ACCESS_KEY_ID,
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
   },
-  endpoint: `https://s3.${process.env.AWS_REGION || "ap-southeast-1"}.amazonaws.com`,
+  // endpoint: undefined, // JANGAN pakai endpoint manual untuk us-east-1
   forcePathStyle: false,
 });
 
