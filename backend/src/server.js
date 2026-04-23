@@ -41,6 +41,17 @@ app.use((err, req, res, next) => {
 // Sync database dan start server
 const startServer = async () => {
   try {
+    // Ensure profile columns exist in production for warga CRUD fields.
+    await db.sequelize.query("ALTER TABLE users ADD COLUMN IF NOT EXISTS alamat TEXT NULL");
+    await db.sequelize.query("ALTER TABLE users ADD COLUMN IF NOT EXISTS dusun VARCHAR(255) NULL");
+    await db.sequelize.query("ALTER TABLE users ADD COLUMN IF NOT EXISTS rt VARCHAR(50) NULL");
+    await db.sequelize.query(
+      "ALTER TABLE users ADD COLUMN IF NOT EXISTS status ENUM('aktif','mutasi','nonaktif') NOT NULL DEFAULT 'aktif'"
+    );
+    await db.sequelize.query(
+      "ALTER TABLE users ADD COLUMN IF NOT EXISTS jenisKelamin ENUM('Laki-laki','Perempuan') NOT NULL DEFAULT 'Laki-laki'"
+    );
+
     // Sync database (create tables if not exist)
     await db.sequelize.sync({ alter: process.env.NODE_ENV !== "production" });
     console.log("✓ Database synced");

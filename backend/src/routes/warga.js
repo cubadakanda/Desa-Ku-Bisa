@@ -8,7 +8,7 @@ const { User } = db;
 
 // Admin: Create user (warga)
 export const createUser = async (req, res) => {
-  const { nik, password, nama, role } = req.body;
+  const { nik, password, nama, alamat, dusun, rt, status, jenisKelamin, role } = req.body;
 
   if (!nik || !nama) {
     return res.status(400).json({ message: "NIK dan nama wajib diisi" });
@@ -27,6 +27,11 @@ export const createUser = async (req, res) => {
       nik,
       password: hashedPassword,
       nama,
+      alamat: alamat || null,
+      dusun: dusun || null,
+      rt: rt || null,
+      status: status || "aktif",
+      jenisKelamin: jenisKelamin || "Laki-laki",
       role: role || "warga",
     });
 
@@ -37,6 +42,11 @@ export const createUser = async (req, res) => {
         id: user.id,
         nik: user.nik,
         nama: user.nama,
+        alamat: user.alamat,
+        dusun: user.dusun,
+        rt: user.rt,
+        status: user.status,
+        jenisKelamin: user.jenisKelamin,
         role: user.role,
       },
     });
@@ -50,7 +60,19 @@ export const createUser = async (req, res) => {
 export const getAllUsers = async (req, res) => {
   try {
     const users = await User.findAll({
-      attributes: ["id", "nik", "nama", "role", "createdAt", "updatedAt"],
+      attributes: [
+        "id",
+        "nik",
+        "nama",
+        "alamat",
+        "dusun",
+        "rt",
+        "status",
+        "jenisKelamin",
+        "role",
+        "createdAt",
+        "updatedAt",
+      ],
     });
     return res.status(200).json(users);
   } catch (error) {
@@ -65,7 +87,19 @@ export const getUser = async (req, res) => {
 
   try {
     const user = await User.findByPk(id, {
-      attributes: ["id", "nik", "nama", "role", "createdAt", "updatedAt"],
+      attributes: [
+        "id",
+        "nik",
+        "nama",
+        "alamat",
+        "dusun",
+        "rt",
+        "status",
+        "jenisKelamin",
+        "role",
+        "createdAt",
+        "updatedAt",
+      ],
     });
 
     if (!user) {
@@ -82,7 +116,7 @@ export const getUser = async (req, res) => {
 // Admin: Update user
 export const updateUser = async (req, res) => {
   const { id } = req.params;
-  const { nama, role } = req.body;
+  const { nik, nama, alamat, dusun, rt, status, jenisKelamin, role } = req.body;
 
   try {
     const user = await User.findByPk(id);
@@ -91,8 +125,21 @@ export const updateUser = async (req, res) => {
       return res.status(404).json({ message: "User tidak ditemukan" });
     }
 
-    if (nama) user.nama = nama;
-    if (role) user.role = role;
+    if (nik && nik !== user.nik) {
+      const existingUser = await User.findOne({ where: { nik } });
+      if (existingUser && existingUser.id !== user.id) {
+        return res.status(409).json({ message: "NIK sudah terdaftar" });
+      }
+      user.nik = nik;
+    }
+
+    if (typeof nama !== "undefined") user.nama = nama;
+    if (typeof alamat !== "undefined") user.alamat = alamat;
+    if (typeof dusun !== "undefined") user.dusun = dusun;
+    if (typeof rt !== "undefined") user.rt = rt;
+    if (typeof status !== "undefined") user.status = status;
+    if (typeof jenisKelamin !== "undefined") user.jenisKelamin = jenisKelamin;
+    if (typeof role !== "undefined") user.role = role;
 
     await user.save();
 
@@ -102,6 +149,11 @@ export const updateUser = async (req, res) => {
         id: user.id,
         nik: user.nik,
         nama: user.nama,
+        alamat: user.alamat,
+        dusun: user.dusun,
+        rt: user.rt,
+        status: user.status,
+        jenisKelamin: user.jenisKelamin,
         role: user.role,
       },
     });

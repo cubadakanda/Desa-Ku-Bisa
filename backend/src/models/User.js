@@ -22,6 +22,28 @@ export default (sequelize) => {
         type: DataTypes.STRING,
         allowNull: false,
       },
+      alamat: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+      },
+      dusun: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      rt: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      status: {
+        type: DataTypes.ENUM("aktif", "mutasi", "nonaktif"),
+        defaultValue: "aktif",
+        allowNull: false,
+      },
+      jenisKelamin: {
+        type: DataTypes.ENUM("Laki-laki", "Perempuan"),
+        defaultValue: "Laki-laki",
+        allowNull: false,
+      },
       role: {
         type: DataTypes.ENUM("admin", "warga"),
         defaultValue: "warga",
