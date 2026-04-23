@@ -1,4 +1,6 @@
 import { Link } from "react-router-dom";
+// 1. IMPORT GAMBAR HERO DARI FOLDER ASSETS
+import heroBg from "../assets/hero-bg.jpg";
 
 const features = [
   {
@@ -34,10 +36,14 @@ export default function LandingPage() {
       </header>
 
       <main>
-        <section className="relative overflow-hidden bg-[#00344a] py-20 lg:py-32">
-          <div className="absolute inset-0 opacity-20">
-            <div className="absolute inset-0 bg-gradient-to-r from-[#00344a] via-[#00344a]/80 to-transparent"></div>
-          </div>
+        {/* 2. UPDATE SECTION HERO: MENAMBAHKAN BACKGROUND IMAGE */}
+        <section 
+          className="relative overflow-hidden bg-[#00344a] py-20 lg:py-32 bg-cover bg-center"
+          style={{ backgroundImage: `url(${heroBg})` }}
+        >
+          {/* OVERLAY: Memberikan filter warna agar teks putih tetap kontras dan mudah dibaca */}
+          <div className="absolute inset-0 bg-[#00344a]/85"></div>
+          
           <div className="mx-auto max-w-7xl px-6 relative z-10">
             <div className="space-y-8 text-white">
               <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#00cffd]/20 border border-[#00cffd]/30 rounded-full">
