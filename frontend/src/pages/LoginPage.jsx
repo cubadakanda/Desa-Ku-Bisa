@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+// 1. IMPORT GAMBAR DARI FOLDER ASSETS
+import loginBg from "../assets/login-bg.jpg"; 
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -25,10 +27,18 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#f5faff] px-4 py-10">
-      <div className="mx-auto grid min-h-[calc(100vh-5rem)] max-w-6xl overflow-hidden rounded-[2rem] border border-[#bbc9cf] bg-white shadow-xl lg:grid-cols-2">
-        <div className="hidden flex-col justify-between bg-[#00677f] p-12 text-white lg:flex">
-          <div>
+    <div className="min-h-screen bg-[#f5faff] px-4 py-10 flex items-center justify-center">
+      <div className="mx-auto grid min-h-[600px] w-full max-w-6xl overflow-hidden rounded-[2rem] border border-[#bbc9cf] bg-white shadow-xl lg:grid-cols-2">
+        
+        {/* 2. PANEL KIRI: MENAMBAHKAN BACKGROUND IMAGE */}
+        <div 
+          className="relative hidden flex-col justify-between p-12 text-white lg:flex bg-cover bg-center"
+          style={{ backgroundImage: `url(${loginBg})` }}
+        >
+          {/* OVERLAY: Agar teks tetap terbaca jika gambar terlalu terang */}
+          <div className="absolute inset-0 bg-[#00677f]/80 backdrop-blur-[2px]"></div>
+
+          <div className="relative z-10">
             <p className="text-2xl font-black">Desa-Ku Bisa</p>
             <h1 className="mt-10 text-4xl font-black leading-tight">
               Transformasi Digital Menuju Desa Mandiri.
@@ -37,14 +47,17 @@ export default function LoginPage() {
               Akses layanan administratif, pantau perkembangan desa, dan sampaikan aspirasi Anda dalam satu platform terintegrasi.
             </p>
           </div>
-          <div className="rounded-lg bg-white/10 backdrop-blur-md border border-white/10 p-4">
+          
+          <div className="relative z-10 rounded-lg bg-white/10 backdrop-blur-md border border-white/10 p-4">
             <p className="text-sm text-white leading-snug">
               Hanya Admin Desa yang dapat membuat akun baru. Silakan hubungi kantor desa untuk pendaftaran.
             </p>
           </div>
         </div>
 
+        {/* PANEL KANAN: FORM LOGIN */}
         <div className="flex flex-col justify-center p-8 lg:p-12">
+          {/* ... Sisa kode form kamu (tetap sama) ... */}
           <div className="lg:hidden flex items-center gap-2 mb-10">
             <p className="text-xl font-black text-[#006689]">Desa-Ku Bisa</p>
           </div>
