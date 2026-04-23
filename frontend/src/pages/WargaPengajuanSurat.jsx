@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { createSubmission, getSubmissions } from "../services/api";
+// 1. IMPORT GAMBAR BACKGROUND
+import wargaBg from "../assets/admin-bg.jpg"; 
 
 const emptyForm = {
   jenisSurat: "Surat Keterangan Domisili",
@@ -103,16 +105,16 @@ export default function WargaPengajuanSurat() {
 
   return (
     <div className="min-h-screen bg-[#f5faff] text-[#001e2c]">
-      <header className="border-b border-[#bbc9cf] bg-white sticky top-0 z-30">
+      <header className="border-b border-[#bbc9cf] bg-white sticky top-0 z-30 shadow-sm">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
           <div>
             <p className="text-lg font-black text-[#006689]">Desa-Ku Bisa</p>
-            <p className="text-xs text-[#6c797f]">Layanan Pengajuan Surat</p>
+            <p className="text-xs text-[#6c797f]">Layanan Warga</p>
           </div>
           <div className="flex items-center gap-3">
             <div className="text-right hidden sm:block">
-              <p className="text-sm font-bold">{user?.name || "Warga"}</p>
-              <p className="text-xs text-[#6c797f]">{user?.nik}</p>
+              <p className="text-sm font-bold text-[#001e2c]">{user?.nama || "Warga"}</p>
+              <p className="text-[10px] text-[#6c797f] font-mono">{user?.nik}</p>
             </div>
             <button
               onClick={logout}
@@ -124,15 +126,34 @@ export default function WargaPengajuanSurat() {
         </div>
       </header>
 
+      {/* 2. PANEL PENYAMBUT DENGAN BACKGROUND IMAGE */}
+      <div 
+        className="relative bg-[#00344a] py-16 bg-cover bg-center"
+        style={{ backgroundImage: `url(${wargaBg})` }}
+      >
+        {/* Overlay agar teks tetap terbaca */}
+        <div className="absolute inset-0 bg-[#00344a]/80 backdrop-blur-[1px]"></div>
+        
+        <div className="mx-auto max-w-7xl px-6 relative z-10 text-white">
+          <h1 className="text-4xl font-black">Layanan Mandiri Warga</h1>
+          <p className="mt-2 text-[#d1ecff] max-w-xl opacity-90">
+            Ajukan surat keterangan dan dokumen administrasi secara digital. Pantau status pengajuan Anda secara real-time.
+          </p>
+        </div>
+      </div>
+
       <main className="mx-auto grid max-w-7xl gap-8 px-6 py-8 lg:grid-cols-12">
+        {/* Kolom Kiri: Form Pengajuan */}
         <section className="lg:col-span-7">
           <div className="rounded-3xl border border-[#bbc9cf] bg-white p-6 shadow-sm">
-            <h1 className="text-3xl font-black">Pengajuan Dokumen Digital</h1>
-            <p className="mt-2 max-w-2xl text-[#6c797f]">
-              Kirimkan permohonan surat keterangan, izin, atau administrasi lainnya secara langsung. File Anda akan dikirim sebagai multipart/form-data dan disimpan ke Amazon S3 melalui backend Node.js.
-            </p>
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 rounded-lg bg-[#e9f5ff] flex items-center justify-center text-[#00677f]">
+                <span className="text-xl">📄</span>
+              </div>
+              <h2 className="text-2xl font-black">Formulir Pengajuan</h2>
+            </div>
 
-            <form className="mt-6 space-y-5" onSubmit={handleSubmit}>
+            <form className="space-y-5" onSubmit={handleSubmit}>
               <div className="grid gap-4 md:grid-cols-2">
                 <div>
                   <label className="mb-2 block text-sm font-semibold">Jenis Surat</label>
@@ -153,7 +174,7 @@ export default function WargaPengajuanSurat() {
                     value={form.keperluan}
                     onChange={(e) => setForm({ ...form, keperluan: e.target.value })}
                     className="w-full rounded-xl border border-[#bbc9cf] bg-[#e9f5ff] px-4 py-3 outline-none focus:border-[#00677f] focus:ring-2 focus:ring-[#d1ecff]"
-                    placeholder="Misal: Persyaratan kerja"
+                    placeholder="Misal: Melamar Pekerjaan"
                     required
                   />
                 </div>
@@ -164,15 +185,15 @@ export default function WargaPengajuanSurat() {
                 <textarea
                   value={form.keterangan}
                   onChange={(e) => setForm({ ...form, keterangan: e.target.value })}
-                  className="w-full rounded-xl border border-[#bbc9cf] bg-[#e9f5ff] px-4 py-3 outline-none focus:border-[#00677f] focus:ring-2 focus:ring-[#d1ecff]"
-                  rows="4"
-                  placeholder="Tambahkan informasi detail jika diperlukan..."
+                  className="w-full rounded-xl border border-[#bbc9cf] bg-[#e9f5ff] px-4 py-3 outline-none focus:border-[#00677f] focus:ring-2 focus:ring-[#d1ecff] resize-none"
+                  rows="3"
+                  placeholder="Tambahkan detail jika ada..."
                 />
               </div>
 
               <div>
-                <label className="mb-2 block text-sm font-semibold">Lampiran Dokumen (KTP/KK/Lainnya)</label>
-                <div className="group relative border-2 border-dashed border-[#bbc9cf] rounded-xl p-8 transition-colors hover:border-[#00677f] bg-[#e9f5ff]/30 flex flex-col items-center justify-center text-center">
+                <label className="mb-2 block text-sm font-semibold">Lampiran Dokumen (KTP/KK)</label>
+                <div className="group relative border-2 border-dashed border-[#bbc9cf] rounded-2xl p-8 transition-all hover:border-[#00677f] hover:bg-[#f5faff] flex flex-col items-center justify-center text-center">
                   <input
                     type="file"
                     accept=".pdf,.jpg,.jpeg,.png"
@@ -183,68 +204,73 @@ export default function WargaPengajuanSurat() {
                     }}
                     className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
                   />
-                  <div className="w-12 h-12 rounded-full bg-white shadow-sm flex items-center justify-center text-[#6c797f] group-hover:text-[#00677f] mb-4 transition-colors">
-                    <span className="text-3xl">☁️</span>
+                  <div className="w-12 h-12 rounded-full bg-white shadow-sm flex items-center justify-center text-[#6c797f] group-hover:text-[#00677f] mb-3 transition-colors">
+                    <span className="text-2xl">📁</span>
                   </div>
-                  <p className="text-sm font-bold">Tarik file ke sini atau <span className="text-[#00677f] underline">Pilih File</span></p>
-                  <p className="text-xs text-[#6c797f] mt-1">Maksimal 10MB per file. Format PDF, JPG, PNG didukung.</p>
+                  <p className="text-sm font-bold">Pilih file atau tarik ke sini</p>
+                  <p className="text-[10px] text-[#6c797f] mt-1 uppercase tracking-wider">Maks 10MB (PDF, JPG, PNG)</p>
                   {selectedFileName ? (
-                    <p className="mt-3 rounded-lg bg-white px-3 py-2 text-xs font-semibold text-[#005469] shadow-sm">
-                      File dipilih: {selectedFileName}
-                    </p>
+                    <div className="mt-4 rounded-lg bg-[#00677f] px-3 py-2 text-[10px] font-bold text-white shadow-md">
+                      FILE: {selectedFileName}
+                    </div>
                   ) : null}
                 </div>
               </div>
 
               {message ? (
-                <div className="rounded-xl border border-[#00cffd]/30 bg-[#e9f5ff] px-4 py-3 text-sm text-[#005469]">
+                <div className="rounded-xl border border-[#00cffd]/30 bg-[#e9f5ff] px-4 py-3 text-sm text-[#005469] font-medium">
                   {message}
                 </div>
               ) : null}
 
               <button
                 disabled={loading}
-                className="w-full rounded-xl bg-[#00677f] px-5 py-3 font-bold text-white transition hover:bg-[#005469] disabled:cursor-not-allowed disabled:opacity-60"
+                className="w-full rounded-xl bg-[#00677f] px-5 py-4 font-bold text-white transition hover:bg-[#005469] shadow-lg shadow-[#00677f]/20 disabled:cursor-not-allowed disabled:opacity-60 active:scale-[0.98]"
                 type="submit"
               >
-                {loading ? "Mengirim..." : "Kirim Pengajuan"}
+                {loading ? "Sedang Mengirim..." : "Kirim Pengajuan Sekarang"}
               </button>
             </form>
           </div>
         </section>
 
+        {/* Kolom Kanan: Riwayat */}
         <section className="lg:col-span-5">
           <div className="rounded-3xl border border-[#bbc9cf] bg-white p-6 shadow-sm">
-            <h2 className="text-2xl font-black">Riwayat Pengajuan</h2>
-            <div className="mt-6 space-y-4">
+            <h2 className="text-2xl font-black mb-6">Status Pengajuan</h2>
+            <div className="space-y-4">
               {history.length === 0 ? (
-                <p className="text-sm text-[#6c797f]">Belum ada pengajuan surat.</p>
+                <div className="text-center py-10 border-2 border-dashed border-[#e9f5ff] rounded-2xl">
+                  <p className="text-sm text-[#6c797f]">Anda belum memiliki riwayat pengajuan.</p>
+                </div>
               ) : (
                 history.map((item) => (
-                  <div key={item.id || item._id} className="rounded-2xl border border-[#bbc9cf] bg-[#e9f5ff] p-4">
-                    <div className="flex items-center justify-between gap-4">
-                      <div>
-                        <p className="font-bold text-[#001e2c]">{item.jenisSurat}</p>
-                        <p className="text-xs text-[#6c797f]">{item.keperluan}</p>
+                  <div key={item.id || item._id} className="rounded-2xl border border-[#bbc9cf] bg-[#f5faff] p-5 hover:border-[#00677f] transition-all">
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="flex-1">
+                        <p className="font-black text-[#001e2c] leading-tight">{item.jenisSurat}</p>
+                        <p className="text-[10px] font-bold text-[#6c797f] uppercase tracking-widest mt-1">{item.keperluan}</p>
                       </div>
-                      <span className="rounded-full bg-[#d1ecff] px-3 py-1 text-xs font-bold text-[#005469]">
+                      <span className={`rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-tighter ${
+                        item.status === 'selesai' ? 'bg-green-100 text-green-700' :
+                        item.status === 'proses' ? 'bg-amber-100 text-amber-700' :
+                        'bg-blue-100 text-blue-700'
+                      }`}>
                         {item.status || "pending"}
                       </span>
                     </div>
-                    {item.keterangan ? (
-                      <p className="mt-3 text-sm text-[#3c494e]">{item.keterangan}</p>
-                    ) : null}
-                    <div className="mt-3 flex items-center justify-between gap-3 text-xs text-[#6c797f]">
-                      <span>
-                        Lampiran: {item.fileUrl ? "Ada" : "Tidak ada"}
-                      </span>
+                    
+                    <div className="mt-4 flex items-center justify-between border-t border-[#bbc9cf]/50 pt-4">
+                      <p className="text-[10px] text-[#6c797f] font-medium">
+                        Lampiran: <span className="text-[#001e2c]">{item.fileUrl ? "Tersedia" : "Kosong"}</span>
+                      </p>
                       {item.fileUrl ? (
                         <button
                           type="button"
-                          onClick={() => setPreviewDocument({ url: item.fileUrl, title: `${item.jenisSurat} - ${item.status || "pending"}` })}
-                          className="font-semibold text-[#00677f] underline"
+                          onClick={() => setPreviewDocument({ url: item.fileUrl, title: item.jenisSurat })}
+                          className="text-[10px] font-black text-[#00677f] uppercase hover:underline"
                         >
-                          Buka Dokumen
+                          Lihat File
                         </button>
                       ) : null}
                     </div>
