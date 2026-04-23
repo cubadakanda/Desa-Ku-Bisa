@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   backend:
-    image: ${{ secrets.DOCKERHUB_USERNAME }}/desa-ku-bisa-backend:latest
+    image: cubadakanda/desa-ku-bisa-backend:latest
     container_name: desa-ku-bisa-backend-prod
     ports:
       - "5000:5000"
@@ -19,19 +19,19 @@ services:
       AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
       AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
       AWS_BUCKET_NAME: ${AWS_BUCKET_NAME}
-      CORS_ORIGIN: https://${DOMAIN}
+      CORS_ORIGIN: http://${EC2_IP}
     restart: unless-stopped
     networks:
       - desa-network
 
   frontend:
-    image: ${{ secrets.DOCKERHUB_USERNAME }}/desa-ku-bisa-frontend:latest
+    image: cubadakanda/desa-ku-bisa-frontend:latest
     container_name: desa-ku-bisa-frontend-prod
     ports:
       - "80:80"
       - "443:443"
     environment:
-      VITE_API_URL: https://${DOMAIN}/api
+      VITE_API_URL: http://${EC2_IP}/api
     depends_on:
       - backend
     restart: unless-stopped

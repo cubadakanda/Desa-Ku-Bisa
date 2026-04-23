@@ -51,7 +51,31 @@ export const updateResident = async (id, payload) => {
     headers: getAuthHeaders(),
     body: JSON.stringify(payload),
   });
-  if (!response.ok) throw new Error("Gagal memperbarui warga");
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.message || "Gagal memperbarui warga");
+  }
+  return response.json();
+};
+
+export const getAllSubmissions = async () => {
+  const response = await fetch(`${API_URL}/surat/all`, {
+    headers: getAuthHeaders(),
+  });
+  if (!response.ok) throw new Error("Gagal mengambil data pengajuan surat");
+  return response.json();
+};
+
+export const updateSubmissionStatus = async (id, status) => {
+  const response = await fetch(`${API_URL}/surat/${id}/status`, {
+    method: "PUT",
+    headers: getAuthHeaders(),
+    body: JSON.stringify({ status }),
+  });
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.message || "Gagal memperbarui status surat");
+  }
   return response.json();
 };
 
@@ -65,7 +89,7 @@ export const deleteResident = async (id) => {
 };
 
 export const getSubmissions = async () => {
-  const response = await fetch(`${API_URL}/surat/pengajuan`, {
+  const response = await fetch(`${API_URL}/surat/my`, {
     headers: getAuthHeaders(),
   });
   if (!response.ok) throw new Error("Gagal mengambil pengajuan");
@@ -73,8 +97,7 @@ export const getSubmissions = async () => {
 };
 
 export const createSubmission = async (formData) => {
-  const token = localStorage.getItem("desa-ku-bisa-token");
-  const response = await fetch(`${API_URL}/surat/pengajuan`, {
+  const response = await fetch(`${API_URL}/surat`, {
     method: "POST",
     headers: getMultipartHeaders(),
     body: formData,

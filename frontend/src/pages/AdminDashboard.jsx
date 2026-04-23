@@ -3,7 +3,9 @@ import { useAuth } from "../context/AuthContext";
 import {
   createResident,
   deleteResident,
+  getAllSubmissions,
   getResidents,
+  updateSubmissionStatus,
   updateResident,
 } from "../services/api";
 import { Navigate } from "react-router-dom";
@@ -11,6 +13,7 @@ import { Navigate } from "react-router-dom";
 const emptyForm = {
   nama: "",
   nik: "",
+  password: "",
   alamat: "",
   dusun: "",
   rt: "",
@@ -21,13 +24,19 @@ const emptyForm = {
 export default function AdminDashboard() {
   const { user, isAuthenticated, logout } = useAuth();
   const [residents, setResidents] = useState([]);
+  const [submissions, setSubmissions] = useState([]);
   const [form, setForm] = useState(emptyForm);
   const [editingId, setEditingId] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [submissionsLoading, setSubmissionsLoading] = useState(false);
   const [message, setMessage] = useState("");
+  const [previewDocument, setPreviewDocument] = useState(null);
+  const [savingSubmissionId, setSavingSubmissionId] = useState(null);
+  const [submissionStatusDrafts, setSubmissionStatusDrafts] = useState({});
 
   useEffect(() => {
     loadResidents();
+    loadSubmissions();
   }, []);
 
   if (!isAuthenticated) {
@@ -47,6 +56,26 @@ export default function AdminDashboard() {
       setMessage("Gagal memuat data warga");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const loadSubmissions = async () => {
+    setSubmissionsLoading(true);
+    try {
+      const data = await getAllSubmissions();
+      const nextSubmissions = Array.isArray(data) ? data : data.data || [];
+      setSubmissions(nextSubmissions);
+      setSubmissionStatusDrafts(
+        nextSubmissions.reduce((accumulator, item) => {
+          accumulator[item.id] = item.status || "pending";
+          return accumulator;
+        }, {})
+      );
+    } catch {
+      setSubmissions([]);
+      setSubmissionStatusDrafts({});
+    } finally {
+      setSubmissionsLoading(false);
     }
   };
 
@@ -80,6 +109,7 @@ export default function AdminDashboard() {
     setForm({
       nama: resident.nama || "",
       nik: resident.nik || "",
+      password: "",
       alamat: resident.alamat || "",
       dusun: resident.dusun || "",
       rt: resident.rt || "",
@@ -99,6 +129,68 @@ export default function AdminDashboard() {
     } catch (err) {
       setMessage(err?.message || "Gagal menghapus data warga.");
     }
+  };
+
+  const closePreview = () => setPreviewDocument(null);
+
+  const handleStatusDraftChange = (submissionId, nextStatus) => {
+    setSubmissionStatusDrafts((previous) => ({
+      ...previous,
+      [submissionId]: nextStatus,
+    }));
+  };
+
+  const handleUpdateSubmissionStatus = async (submissionId) => {
+    const nextStatus = submissionStatusDrafts[submissionId];
+    if (!nextStatus) return;
+
+    try {
+      setSavingSubmissionId(submissionId);
+      await updateSubmissionStatus(submissionId, nextStatus);
+      setMessage("Status surat berhasil diperbarui.");
+      await loadSubmissions();
+    } catch (error) {
+      setMessage(error?.message || "Gagal memperbarui status surat.");
+    } finally {
+      setSavingSubmissionId(null);
+    }
+  };
+
+  const renderPreviewContent = () => {
+    if (!previewDocument) return null;
+
+    const { url, title } = previewDocument;
+    const isImage = /\.(png|jpe?g|gif|webp)$/i.test(url);
+
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4" onClick={closePreview}>
+        <div
+          className="relative w-full max-w-3xl overflow-hidden rounded-3xl bg-white shadow-2xl"
+          onClick={(event) => event.stopPropagation()}
+        >
+          <div className="flex items-center justify-between border-b border-[#bbc9cf] px-5 py-4">
+            <div>
+              <p className="text-lg font-black text-[#001e2c]">{title}</p>
+              <p className="text-xs text-[#6c797f]">Preview dokumen warga</p>
+            </div>
+            <button
+              onClick={closePreview}
+              className="rounded-full border border-[#bbc9cf] px-4 py-2 text-sm font-semibold text-[#001e2c] transition hover:bg-[#f5faff]"
+            >
+              Tutup
+            </button>
+          </div>
+
+          <div className="h-[70vh] bg-[#f5faff] p-4">
+            {isImage ? (
+              <img src={url} alt={title} className="h-full w-full rounded-2xl object-contain bg-white" />
+            ) : (
+              <iframe title={title} src={url} className="h-full w-full rounded-2xl border-0 bg-white" />
+            )}
+          </div>
+        </div>
+      </div>
+    );
   };
 
   return (
@@ -143,6 +235,23 @@ export default function AdminDashboard() {
                 onChange={(e) => setForm({ ...form, nik: e.target.value })}
                 required
               />
+              {!editingId ? (
+                <input
+                  className="w-full rounded-xl border border-[#bbc9cf] bg-[#e9f5ff] px-4 py-3 outline-none focus:border-[#00677f] focus:ring-2 focus:ring-[#d1ecff]"
+                  placeholder="Password awal (opsional, default warga123)"
+                  type="password"
+                  value={form.password}
+                  onChange={(e) => setForm({ ...form, password: e.target.value })}
+                />
+              ) : (
+                <input
+                  className="w-full rounded-xl border border-[#bbc9cf] bg-[#e9f5ff] px-4 py-3 outline-none focus:border-[#00677f] focus:ring-2 focus:ring-[#d1ecff]"
+                  placeholder="Password baru (kosongkan jika tidak diubah)"
+                  type="password"
+                  value={form.password}
+                  onChange={(e) => setForm({ ...form, password: e.target.value })}
+                />
+              )}
               <textarea
                 className="w-full rounded-xl border border-[#bbc9cf] bg-[#e9f5ff] px-4 py-3 outline-none focus:border-[#00677f] focus:ring-2 focus:ring-[#d1ecff]"
                 placeholder="Alamat"
@@ -276,8 +385,86 @@ export default function AdminDashboard() {
               </table>
             </div>
           </div>
+
+          <div className="mt-8 rounded-3xl border border-[#bbc9cf] bg-white shadow-sm">
+            <div className="border-b border-[#bbc9cf] px-6 py-4">
+              <h2 className="text-2xl font-black">Pengajuan Surat Warga</h2>
+              <p className="text-sm text-[#6c797f]">Lihat semua pengajuan dan dokumen yang diunggah warga.</p>
+            </div>
+
+            <div className="overflow-x-auto">
+              <table className="w-full text-left">
+                <thead className="bg-[#e9f5ff] text-xs uppercase tracking-[0.2em] text-[#6c797f]">
+                  <tr>
+                    <th className="px-6 py-4">Warga</th>
+                    <th className="px-6 py-4">Jenis Surat</th>
+                    <th className="px-6 py-4">Keperluan</th>
+                    <th className="px-6 py-4">Lampiran</th>
+                    <th className="px-6 py-4">Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {submissionsLoading ? (
+                    <tr>
+                      <td className="px-6 py-8 text-[#6c797f]" colSpan="5">
+                        Memuat pengajuan surat...
+                      </td>
+                    </tr>
+                  ) : submissions.length === 0 ? (
+                    <tr>
+                      <td className="px-6 py-8 text-[#6c797f]" colSpan="5">
+                        Belum ada pengajuan surat.
+                      </td>
+                    </tr>
+                  ) : (
+                    submissions.map((item) => (
+                      <tr key={item.id} className="border-t border-[#e5e4e7] hover:bg-[#f5faff]">
+                        <td className="px-6 py-4 font-semibold">{item.user?.nama || "-"}</td>
+                        <td className="px-6 py-4">{item.jenisSurat}</td>
+                        <td className="px-6 py-4">{item.keperluan}</td>
+                        <td className="px-6 py-4">
+                          {item.fileUrl ? (
+                            <button
+                              onClick={() => setPreviewDocument({ url: item.fileUrl, title: `${item.user?.nama || "Warga"} - ${item.jenisSurat}` })}
+                              className="text-[#00677f] underline"
+                            >
+                              Lihat Dokumen
+                            </button>
+                          ) : (
+                            <span className="text-[#6c797f]">Tanpa lampiran</span>
+                          )}
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="flex items-center gap-2">
+                            <select
+                              value={submissionStatusDrafts[item.id] || item.status || "pending"}
+                              onChange={(event) => handleStatusDraftChange(item.id, event.target.value)}
+                              className="rounded-lg border border-[#bbc9cf] bg-white px-3 py-2 text-xs font-semibold outline-none"
+                            >
+                              <option value="pending">pending</option>
+                              <option value="proses">proses</option>
+                              <option value="selesai">selesai</option>
+                            </select>
+                            <button
+                              type="button"
+                              disabled={savingSubmissionId === item.id}
+                              onClick={() => handleUpdateSubmissionStatus(item.id)}
+                              className="rounded-lg bg-[#00677f] px-3 py-2 text-xs font-bold text-white disabled:cursor-not-allowed disabled:opacity-60"
+                            >
+                              {savingSubmissionId === item.id ? "Menyimpan..." : "Ubah"}
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
         </section>
       </main>
+      {renderPreviewContent()}
     </div>
   );
 }

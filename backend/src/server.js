@@ -3,6 +3,7 @@ import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan";
 import dotenv from "dotenv";
+import path from "path";
 import { db } from "./models/index.js";
 import authRoutes from "./routes/auth.js";
 import wargaRoutes from "./routes/warga.js";
@@ -19,6 +20,7 @@ app.use(cors());
 app.use(morgan("combined"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 
 // Routes
 app.use("/api/auth", authRoutes);
@@ -41,20 +43,32 @@ app.use((err, req, res, next) => {
 // Sync database dan start server
 const startServer = async () => {
   try {
-    // Ensure profile columns exist in production for warga CRUD fields.
-    await db.sequelize.query("ALTER TABLE users ADD COLUMN IF NOT EXISTS alamat TEXT NULL");
-    await db.sequelize.query("ALTER TABLE users ADD COLUMN IF NOT EXISTS dusun VARCHAR(255) NULL");
-    await db.sequelize.query("ALTER TABLE users ADD COLUMN IF NOT EXISTS rt VARCHAR(50) NULL");
-    await db.sequelize.query(
-      "ALTER TABLE users ADD COLUMN IF NOT EXISTS status ENUM('aktif','mutasi','nonaktif') NOT NULL DEFAULT 'aktif'"
-    );
-    await db.sequelize.query(
-      "ALTER TABLE users ADD COLUMN IF NOT EXISTS jenisKelamin ENUM('Laki-laki','Perempuan') NOT NULL DEFAULT 'Laki-laki'"
-    );
-
-    // Sync database (create tables if not exist)
+    // Create tables first when database is empty.
     await db.sequelize.sync({ alter: process.env.NODE_ENV !== "production" });
     console.log("✓ Database synced");
+
+    const ensureColumn = async (columnName, columnDefinition) => {
+      const [rows] = await db.sequelize.query(
+        "SELECT COUNT(*) AS columnCount FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'users' AND COLUMN_NAME = :columnName",
+        {
+          replacements: { columnName },
+        }
+      );
+
+      if (!rows?.[0]?.columnCount) {
+        await db.sequelize.query(`ALTER TABLE users ADD COLUMN ${columnDefinition}`);
+      }
+    };
+
+    // Ensure profile columns exist for warga CRUD fields.
+    await ensureColumn("alamat", "alamat TEXT NULL");
+    await ensureColumn("dusun", "dusun VARCHAR(255) NULL");
+    await ensureColumn("rt", "rt VARCHAR(50) NULL");
+    await ensureColumn("status", "status ENUM('aktif','mutasi','nonaktif') NOT NULL DEFAULT 'aktif'");
+    await ensureColumn(
+      "jenisKelamin",
+      "jenisKelamin ENUM('Laki-laki','Perempuan') NOT NULL DEFAULT 'Laki-laki'"
+    );
 
     // Start listening
     app.listen(PORT, () => {

@@ -116,7 +116,7 @@ export const getUser = async (req, res) => {
 // Admin: Update user
 export const updateUser = async (req, res) => {
   const { id } = req.params;
-  const { nik, nama, alamat, dusun, rt, status, jenisKelamin, role } = req.body;
+  const { nik, password, nama, alamat, dusun, rt, status, jenisKelamin, role } = req.body;
 
   try {
     const user = await User.findByPk(id);
@@ -134,6 +134,9 @@ export const updateUser = async (req, res) => {
     }
 
     if (typeof nama !== "undefined") user.nama = nama;
+    if (typeof password === "string" && password.trim()) {
+      user.password = await bcryptjs.hash(password, 10);
+    }
     if (typeof alamat !== "undefined") user.alamat = alamat;
     if (typeof dusun !== "undefined") user.dusun = dusun;
     if (typeof rt !== "undefined") user.rt = rt;

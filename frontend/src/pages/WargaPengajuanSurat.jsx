@@ -16,6 +16,8 @@ export default function WargaPengajuanSurat() {
   const [history, setHistory] = useState([]);
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const [selectedFileName, setSelectedFileName] = useState("");
+  const [previewDocument, setPreviewDocument] = useState(null);
 
   useEffect(() => {
     loadHistory();
@@ -51,12 +53,52 @@ export default function WargaPengajuanSurat() {
       await createSubmission(formData);
       setMessage("Pengajuan surat berhasil dikirim.");
       setForm(emptyForm);
+      setSelectedFileName("");
       await loadHistory();
     } catch (err) {
       setMessage(err?.message || "Gagal mengirim pengajuan surat.");
     } finally {
       setLoading(false);
     }
+  };
+
+  const closePreview = () => setPreviewDocument(null);
+
+  const renderPreviewContent = () => {
+    if (!previewDocument) return null;
+
+    const { url, title } = previewDocument;
+    const isImage = /\.(png|jpe?g|gif|webp)$/i.test(url);
+
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4" onClick={closePreview}>
+        <div
+          className="relative w-full max-w-3xl overflow-hidden rounded-3xl bg-white shadow-2xl"
+          onClick={(event) => event.stopPropagation()}
+        >
+          <div className="flex items-center justify-between border-b border-[#bbc9cf] px-5 py-4">
+            <div>
+              <p className="text-lg font-black text-[#001e2c]">{title}</p>
+              <p className="text-xs text-[#6c797f]">Preview dokumen pengajuan</p>
+            </div>
+            <button
+              onClick={closePreview}
+              className="rounded-full border border-[#bbc9cf] px-4 py-2 text-sm font-semibold text-[#001e2c] transition hover:bg-[#f5faff]"
+            >
+              Tutup
+            </button>
+          </div>
+
+          <div className="h-[70vh] bg-[#f5faff] p-4">
+            {isImage ? (
+              <img src={url} alt={title} className="h-full w-full rounded-2xl object-contain bg-white" />
+            ) : (
+              <iframe title={title} src={url} className="h-full w-full rounded-2xl border-0 bg-white" />
+            )}
+          </div>
+        </div>
+      </div>
+    );
   };
 
   return (
@@ -134,7 +176,11 @@ export default function WargaPengajuanSurat() {
                   <input
                     type="file"
                     accept=".pdf,.jpg,.jpeg,.png"
-                    onChange={(e) => setForm({ ...form, lampiran: e.target.files?.[0] || null })}
+                    onChange={(e) => {
+                      const file = e.target.files?.[0] || null;
+                      setForm({ ...form, lampiran: file });
+                      setSelectedFileName(file ? file.name : "");
+                    }}
                     className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
                   />
                   <div className="w-12 h-12 rounded-full bg-white shadow-sm flex items-center justify-center text-[#6c797f] group-hover:text-[#00677f] mb-4 transition-colors">
@@ -142,6 +188,11 @@ export default function WargaPengajuanSurat() {
                   </div>
                   <p className="text-sm font-bold">Tarik file ke sini atau <span className="text-[#00677f] underline">Pilih File</span></p>
                   <p className="text-xs text-[#6c797f] mt-1">Maksimal 10MB per file. Format PDF, JPG, PNG didukung.</p>
+                  {selectedFileName ? (
+                    <p className="mt-3 rounded-lg bg-white px-3 py-2 text-xs font-semibold text-[#005469] shadow-sm">
+                      File dipilih: {selectedFileName}
+                    </p>
+                  ) : null}
                 </div>
               </div>
 
@@ -183,6 +234,20 @@ export default function WargaPengajuanSurat() {
                     {item.keterangan ? (
                       <p className="mt-3 text-sm text-[#3c494e]">{item.keterangan}</p>
                     ) : null}
+                    <div className="mt-3 flex items-center justify-between gap-3 text-xs text-[#6c797f]">
+                      <span>
+                        Lampiran: {item.fileUrl ? "Ada" : "Tidak ada"}
+                      </span>
+                      {item.fileUrl ? (
+                        <button
+                          type="button"
+                          onClick={() => setPreviewDocument({ url: item.fileUrl, title: `${item.jenisSurat} - ${item.status || "pending"}` })}
+                          className="font-semibold text-[#00677f] underline"
+                        >
+                          Buka Dokumen
+                        </button>
+                      ) : null}
+                    </div>
                   </div>
                 ))
               )}
@@ -190,6 +255,7 @@ export default function WargaPengajuanSurat() {
           </div>
         </section>
       </main>
+      {renderPreviewContent()}
     </div>
   );
 }

@@ -1,5 +1,7 @@
 import multer from "multer";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
+import fs from "fs/promises";
+import path from "path";
 import { v4 as uuidv4 } from "uuid";
 
 const s3Client = new S3Client({
@@ -11,6 +13,7 @@ const s3Client = new S3Client({
 });
 
 const storage = multer.memoryStorage();
+const localUploadDir = path.join(process.cwd(), "uploads");
 
 const fileFilter = (req, file, cb) => {
   const allowedMimes = ["application/pdf", "image/jpeg", "image/png"];
@@ -27,8 +30,26 @@ export const upload = multer({
   limits: { fileSize: 10 * 1024 * 1024 }, // 10MB
 });
 
-export const uploadToS3 = async (file) => {
+export const uploadToS3 = async (file, req) => {
   if (!file) return null;
+
+  const hasAwsConfig =
+    process.env.AWS_BUCKET_NAME &&
+    process.env.AWS_ACCESS_KEY_ID &&
+    process.env.AWS_SECRET_ACCESS_KEY;
+
+  if (!hasAwsConfig || process.env.NODE_ENV !== "production") {
+    await fs.mkdir(localUploadDir, { recursive: true });
+
+    const safeFileName = `${uuidv4()}-${Date.now()}-${file.originalname}`.replace(/\s+/g, "-");
+    const filePath = path.join(localUploadDir, safeFileName);
+    await fs.writeFile(filePath, file.buffer);
+
+    const baseUrl =
+      process.env.PUBLIC_BASE_URL || `${req?.protocol || "http"}://${req?.get("host") || `localhost:${process.env.PORT || 5000}`}`;
+
+    return `${baseUrl}/uploads/${safeFileName}`;
+  }
 
   const fileName = `uploads/${uuidv4()}-${Date.now()}-${file.originalname}`;
 

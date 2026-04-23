@@ -20,7 +20,7 @@ export const createSurat = async (req, res) => {
 
     // Upload ke S3 jika ada file
     if (req.file) {
-      fileUrl = await uploadToS3(req.file);
+      fileUrl = await uploadToS3(req.file, req);
     }
 
     const surat = await Surat.create({
