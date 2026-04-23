@@ -10,8 +10,8 @@ const { User } = db;
 export const createUser = async (req, res) => {
   const { nik, password, nama, role } = req.body;
 
-  if (!nik || !password || !nama) {
-    return res.status(400).json({ message: "Semua field harus diisi" });
+  if (!nik || !nama) {
+    return res.status(400).json({ message: "NIK dan nama wajib diisi" });
   }
 
   try {
@@ -20,7 +20,9 @@ export const createUser = async (req, res) => {
       return res.status(409).json({ message: "NIK sudah terdaftar" });
     }
 
-    const hashedPassword = await bcryptjs.hash(password, 10);
+    // Admin form does not provide password; use a safe default for first login.
+    const plainPassword = password || "warga123";
+    const hashedPassword = await bcryptjs.hash(plainPassword, 10);
     const user = await User.create({
       nik,
       password: hashedPassword,
@@ -30,6 +32,7 @@ export const createUser = async (req, res) => {
 
     return res.status(201).json({
       message: "User berhasil dibuat",
+      initialPassword: password ? undefined : plainPassword,
       user: {
         id: user.id,
         nik: user.nik,

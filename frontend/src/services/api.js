@@ -38,7 +38,10 @@ export const createResident = async (payload) => {
     headers: getAuthHeaders(),
     body: JSON.stringify(payload),
   });
-  if (!response.ok) throw new Error("Gagal menambah warga");
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.message || "Gagal menambah warga");
+  }
   return response.json();
 };
 
