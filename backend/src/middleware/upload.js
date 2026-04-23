@@ -4,13 +4,15 @@ import fs from "fs/promises";
 import path from "path";
 import { v4 as uuidv4 } from "uuid";
 
-// Konfigurasi S3 Client
+// Konfigurasi S3 Client dengan endpoint sesuai region
 const s3Client = new S3Client({
   region: process.env.AWS_REGION || "ap-southeast-1",
   credentials: {
     accessKeyId: process.env.AWS_ACCESS_KEY_ID,
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
   },
+  endpoint: `https://s3.${process.env.AWS_REGION || "ap-southeast-1"}.amazonaws.com`,
+  forcePathStyle: false,
 });
 
 // Storage multer pakai memory
