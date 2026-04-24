@@ -346,7 +346,7 @@ npm run seed
 # Creates:
 # - Admin: NIK 0000000000000001 / password: admin123
 # - Warga: NIK 1234567890123456 / password: warga123
-# - Paris: NIK 1122334455667700 / password: paris123
+# - Paris: NIK 1122334455667700 / password
 ```
 
 ## 🛡️ Security
