@@ -3,8 +3,11 @@
 Platform digital untuk layanan administrasi desa dengan teknologi cloud computing.
 
 **NRP**: 152023141
+
 **Nama**: Parisan Apro
+
 **Mata Kuliah**: Komputasi Awan (Cloud Computing)
+
 **Universitas**: Institut Teknologi Nasional Bandung
 
 ## 📋 Deskripsi Proyek
