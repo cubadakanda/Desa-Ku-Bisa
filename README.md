@@ -2,10 +2,10 @@
 
 Platform digital untuk layanan administrasi desa dengan teknologi cloud computing.
 
-**NRP**: 152023141  
-**Nama**: Parisan Apro  
-**Mata Kuliah**: Komputasi Awan (Cloud Computing)  
-**Universitas**: Institut Teknologi Sepuluh Nopember (ITS)
+**NRP**: 152023141
+**Nama**: Parisan Apro
+**Mata Kuliah**: Komputasi Awan (Cloud Computing)
+**Universitas**: Institut Teknologi Nasional Bandung
 
 ## 📋 Deskripsi Proyek
 
@@ -16,9 +16,18 @@ Aplikasi web untuk membantu desa dalam mengelola data penduduk dan pengajuan sur
 - **Cloud Infrastructure**: AWS EC2, RDS, S3
 - **CI/CD Pipeline**: GitHub Actions untuk automated deployment
 
+#### Test Credentials
+
+| Role  | NIK              | Password |
+| ----- | ---------------- | -------- |
+| Admin | 0000000000000001 | admin123 |
+| Warga | 1234567890123456 | warga123 |
+| Paris | 1122334455667700 | paris123 |
+
 ## 🛠️ Tech Stack
 
 ### Frontend
+
 - **React** 19.2.5 - UI library
 - **Vite** 8.0.9 - Build tool
 - **React Router DOM** 7.14.2 - Routing
@@ -26,6 +35,7 @@ Aplikasi web untuk membantu desa dalam mengelola data penduduk dan pengajuan sur
 - **Axios** 1.15.2 - HTTP client
 
 ### Backend
+
 - **Node.js** 18 LTS
 - **Express** 4.18.2 - Web framework
 - **Sequelize** 6.35.2 - ORM
@@ -35,12 +45,14 @@ Aplikasi web untuk membantu desa dalam mengelola data penduduk dan pengajuan sur
 - **AWS SDK** - S3 integration
 
 ### Infrastructure
+
 - **Docker** - Containerization
 - **Docker Compose** - Orchestration
 - **AWS EC2** - Compute
 - **AWS RDS** - Database
 - **AWS S3** - File storage
 - **GitHub Actions** - CI/CD
+- **Nginx -** Reverse proxy dan web server
 
 ## 📁 Struktur Project
 
@@ -85,6 +97,7 @@ desa-ku-bisa/
 ### Development (Local)
 
 #### Prerequisites
+
 - Node.js 18+
 - MySQL 8.0 (atau Docker)
 - Git
@@ -119,13 +132,6 @@ npm run dev
 - Backend API: http://localhost:5000
 - Database: localhost:3306 (desa_user / desa_password)
 
-#### Test Credentials
-
-| Role | NIK | Password |
-|------|-----|----------|
-| Admin | 0000000000000001 | admin123 |
-| Warga | 1234567890123456 | warga123 |
-
 ### Production (AWS)
 
 ```bash
@@ -152,18 +158,21 @@ Lihat [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md) untuk detail lengkap.
 ## 🔐 Features
 
 ### Authentication & Authorization
+
 - JWT-based authentication
 - Role-based access control (RBAC)
 - Admin & Warga roles
 - Password hashing with bcryptjs
 
 ### Admin Features
+
 - ✅ Manajemen data warga (CRUD)
 - ✅ Tracking antrian pengajuan surat
 - ✅ Update status pengajuan (pending → proses → selesai)
 - ✅ View attachment files
 
 ### Warga Features
+
 - ✅ Login dengan NIK
 - ✅ Lihat profil diri
 - ✅ Pengajuan surat dengan upload dokumen
@@ -171,6 +180,7 @@ Lihat [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md) untuk detail lengkap.
 - ✅ Download surat (ketika selesai)
 
 ### Cloud Features
+
 - ✅ AWS RDS untuk data storage
 - ✅ AWS S3 untuk file upload
 - ✅ Docker containerization
@@ -180,6 +190,7 @@ Lihat [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md) untuk detail lengkap.
 ## 📊 Database Schema
 
 ### User Table
+
 ```sql
 - id (PK)
 - nik (unique)
@@ -190,6 +201,7 @@ Lihat [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md) untuk detail lengkap.
 ```
 
 ### Surat Table
+
 ```sql
 - id (PK)
 - jenisSurat
@@ -204,19 +216,23 @@ Lihat [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md) untuk detail lengkap.
 ## 🔗 API Endpoints
 
 ### Auth
+
 - `POST /api/auth/login` - Login
 
 ### Users (Admin Only)
+
 - `GET /api/warga` - List semua warga
 - `POST /api/warga` - Buat warga baru
 - `PUT /api/warga/:id` - Edit warga
 - `DELETE /api/warga/:id` - Hapus warga
 
 ### Surat (Warga)
+
 - `POST /api/surat` - Buat pengajuan (with file)
 - `GET /api/surat/my` - Tracking pengajuan saya
 
 ### Surat (Admin)
+
 - `GET /api/surat/all` - Lihat semua pengajuan (antrian)
 - `PUT /api/surat/:id/status` - Update status pengajuan
 
@@ -251,11 +267,13 @@ docker-compose down
 ## ⚙️ Environment Variables
 
 ### Frontend (.env)
+
 ```
 VITE_API_URL=http://localhost:5000/api
 ```
 
 ### Backend (.env)
+
 ```
 PORT=5000
 NODE_ENV=development
@@ -275,23 +293,27 @@ CORS_ORIGIN=http://localhost:5173
 ## 🔄 CI/CD Pipeline
 
 GitHub Actions workflow:
+
 1. **Build**: Compile frontend dan backend
 2. **Test**: Run tests (optional)
 3. **Push**: Push Docker images ke Docker Hub
 4. **Deploy**: SSH ke EC2 dan run docker-compose
 
 Setup requirements:
+
 - GitHub Secrets: DOCKERHUB_USERNAME, DOCKERHUB_TOKEN
 - GitHub Secrets: EC2_HOST, EC2_USER, EC2_SSH_KEY
 
 ## 📈 Performance & Scaling
 
 ### Current Setup
+
 - Suitable untuk: 100-1000 concurrent users
 - Database: RDS t3.micro (single AZ)
 - Server: EC2 t3.micro (single instance)
 
 ### Scaling Options (Future)
+
 - Add RDS Read Replicas
 - EC2 Auto Scaling Group
 - CloudFront CDN
@@ -301,6 +323,7 @@ Setup requirements:
 ## 🧪 Testing
 
 ### Manual Testing
+
 ```bash
 # Frontend
 npm run dev
@@ -315,6 +338,7 @@ see LOCAL_TESTING_GUIDE.md
 ```
 
 ### Database Seeding
+
 ```bash
 cd backend
 npm run seed
@@ -322,6 +346,7 @@ npm run seed
 # Creates:
 # - Admin: NIK 0000000000000001 / password: admin123
 # - Warga: NIK 1234567890123456 / password: warga123
+# - Paris: NIK 1122334455667700 / password: paris123
 ```
 
 ## 🛡️ Security
@@ -345,18 +370,21 @@ npm run seed
 ## 🐛 Troubleshooting
 
 ### Frontend Issues
+
 - Check VITE_API_URL in .env
 - Clear browser cache (DevTools → Application → Clear)
 - Check browser console for errors
 - Verify backend running on port 5000
 
 ### Backend Issues
+
 - Check database connection
 - Verify .env credentials
 - Check port 5000 not in use
 - Review error logs: `docker-compose logs -f backend`
 
 ### Docker Issues
+
 - Check Docker daemon running
 - Verify images built: `docker images`
 - Check containers running: `docker ps`
@@ -367,6 +395,7 @@ Lihat [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md) untuk troubleshooting lebih det
 ## 📞 Support
 
 Untuk questions atau issues, buat GitHub issue atau contact:
+
 - **Email**: parisan.apro@example.com
 - **GitHub**: https://github.com/YOUR_USERNAME
 
@@ -384,4 +413,4 @@ ISC License - See LICENSE file
 
 **Status**: ✅ Development Complete | ⏳ Ready for Deployment
 
-Last Updated: 2024 | NRP 152023141
+Last Updated: 2026 | NRP 152023141
